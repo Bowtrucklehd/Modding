@@ -1,8 +1,6 @@
 package bowtruckle.mods.gods;
 
-import bowtruckle.mods.gods.common.ForgeEventhandler;
 import bowtruckle.mods.gods.data.CapabilityPlayerInfo;
-import bowtruckle.mods.gods.data.PlayerInfoEventHandler;
 import bowtruckle.mods.gods.tools.Settings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,13 +48,6 @@ public class GodsMod {
 
         //registering
         CapabilityPlayerInfo.register();
-
-        MinecraftForge.EVENT_BUS.register(new ForgeEventhandler());
-        MinecraftForge.EVENT_BUS.addListener(PlayerInfoEventHandler::attachCapability);
-        MinecraftForge.EVENT_BUS.addListener(PlayerInfoEventHandler::onPlayerMove);
-
-
-
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
