@@ -12,32 +12,37 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = Settings.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(modid = Settings.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlayerInfoEventHandler {
+
+    private static int ticks = 0;
 
 
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Entity> e) {
         if(e.getObject() instanceof PlayerEntity) {
             PlayerInfoProvider provider = new PlayerInfoProvider();
-            e.addCapability(new ResourceLocation(Settings.MODID,"lastPos"), provider);
+            e.addCapability(new ResourceLocation(Settings.MODID,"lastpos"), provider);
             e.addListener(provider::invalidate);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerMove(TickEvent.PlayerTickEvent e) {
-        System.out.println("event called");
-        if(e.getPhase().equals(TickEvent.Phase.END)) {
-            System.out.println("Event Phase End");
+        ticks++;
+        if(e.phase.name() == TickEvent.PlayerTickEvent.Phase.START.name()) {
             e.player.getCapability(CapabilityPlayerInfo.PLAYER_INFO_CAPABILITY).ifPresent(information -> {
                 Vector3 pos = new Vector3(e.player.getPosX(), e.player.getPosY(), e.player.getPosZ());
-                if (pos == information.getLastPos()) {
-                    e.player.setInvisible(true);
-                }else{
-                    e.player.setInvisible(false);
+                pos.roundToDecimal(2);
+                if (information.getLastPos() != null) {
+                    if (pos.compare(information.getLastPos())) {
+                        e.player.setInvisible(true);
+                    } else {
+                        e.player.setInvisible(false);
+                    }
+                    System.out.println(information.getLastPos().getX() + " " + information.getLastPos().getY() + " " + information.getLastPos().getZ());
                 }
-                System.out.println(information.getLastPos());
+                information.setLastPos(pos);
             });
         }
     }
