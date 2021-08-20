@@ -30,7 +30,7 @@ public class PlayerInfoEventHandler {
     @SubscribeEvent
     public static void onPlayerMove(TickEvent.PlayerTickEvent e) {
         ticks++;
-        if(e.phase.name() == TickEvent.PlayerTickEvent.Phase.START.name()) {
+        if(e.phase.equals(TickEvent.PlayerTickEvent.Phase.START)) {
             e.player.getCapability(CapabilityPlayerInfo.PLAYER_INFO_CAPABILITY).ifPresent(information -> {
                 Vector3 pos = new Vector3(e.player.getPosX(), e.player.getPosY(), e.player.getPosZ());
                 pos.roundToDecimal(2);
